@@ -14,12 +14,11 @@ import java.util.Optional;
  */
 @Repository
 public interface SalesRepository {
+
     /**
-     * Find all sales.
-     *
-     * @return a list of all sales
+     * Find paginated sales.
      */
-    List<Sales> findAll();
+    List<Sales> findAll(int page, int size);
 
     /**
      * Find a sale by its ID.
@@ -28,5 +27,15 @@ public interface SalesRepository {
      * @return an Optional containing the sale if found, or empty if not found
      */
     Optional<Sales> findById(Long id);
+
+    /**
+     * Find sales by brand ID.
+     */
+    List<Sales> findByBrandId(Long brandId);
+
+    /**
+     * Find sales by vehicle ID.
+     */
+    List<Sales> findByVehicleId(Long vehicleId);
 
 }

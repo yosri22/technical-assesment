@@ -24,8 +24,8 @@ public class SalesServiceImpl implements SalesService {
      * {@inheritDoc}
      */
     @Override
-    public List<Sales> getAllSales() {
-        return salesRepository.findAll();
+    public List<Sales> getAllSales(int page, int size) {
+        return salesRepository.findAll(page, size);
     }
 
     /**
@@ -36,4 +36,19 @@ public class SalesServiceImpl implements SalesService {
         return salesRepository.findById(id);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Sales> getSalesByBrandId(Long brandId) {
+        return salesRepository.findByBrandId(brandId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Sales> getSalesByVehicleId(Long vehicleId) {
+        return salesRepository.findByVehicleId(vehicleId);
+    }
 }

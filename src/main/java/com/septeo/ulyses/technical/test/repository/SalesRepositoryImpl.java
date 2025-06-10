@@ -24,10 +24,12 @@ public class SalesRepositoryImpl implements SalesRepository {
     private EntityManager entityManager;
 
     @Override
-    public List<Sales> findAll() {
-        String stringQuery = "SELECT s FROM Sales s";
-        Query query = entityManager.createQuery(stringQuery);
-        return query.getResultList();
+    public List<Sales> findAll(int page, int size) {
+        String queryStr = "SELECT s FROM Sales s";
+        return entityManager.createQuery(queryStr, Sales.class)
+                .setFirstResult(page * size)
+                .setMaxResults(size)
+                .getResultList();
     }
 
     @Override
@@ -42,4 +44,21 @@ public class SalesRepositoryImpl implements SalesRepository {
             return Optional.empty();
         }
     }
+
+    @Override
+    public List<Sales> findByBrandId(Long brandId) {
+        String queryStr = "SELECT s FROM Sales s WHERE s.brand.id = :brandId";
+        return entityManager.createQuery(queryStr, Sales.class)
+                .setParameter("brandId", brandId)
+                .getResultList();
+    }
+
+    @Override
+    public List<Sales> findByVehicleId(Long vehicleId) {
+        String queryStr = "SELECT s FROM Sales s WHERE s.vehicle.id = :vehicleId";
+        return entityManager.createQuery(queryStr, Sales.class)
+                .setParameter("vehicleId", vehicleId)
+                .getResultList();
+    }
+
 }

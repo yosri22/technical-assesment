@@ -4,10 +4,7 @@ import com.septeo.ulyses.technical.test.entity.Sales;
 import com.septeo.ulyses.technical.test.service.SalesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,8 +16,8 @@ public class SalesController {
     private SalesService salesService;
 
     @GetMapping
-    public ResponseEntity<List<Sales>> getAllSales() {
-        return ResponseEntity.ok(salesService.getAllSales());
+    public ResponseEntity<List<Sales>> getAllSales(@RequestParam(value = "page", required = false, defaultValue = "0") int page) {
+        return ResponseEntity.ok(salesService.getAllSales(page, 10));
     }
 
     @GetMapping("/{id}")
@@ -30,6 +27,14 @@ public class SalesController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // TODO: implement here your endpoints
+    @GetMapping("/brands/{brandId}")
+    public ResponseEntity<List<Sales>> getSalesByBrandId(@PathVariable Long brandId) {
+        return ResponseEntity.ok(salesService.getSalesByBrandId(brandId));
+    }
+
+    @GetMapping("/vehicles/{vehicleId}")
+    public ResponseEntity<List<Sales>> getSalesByVehicleId(@PathVariable Long vehicleId) {
+        return ResponseEntity.ok(salesService.getSalesByVehicleId(vehicleId));
+    }
 
 }

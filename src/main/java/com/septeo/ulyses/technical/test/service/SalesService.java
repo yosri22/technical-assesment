@@ -14,11 +14,13 @@ import java.util.Optional;
 public interface SalesService {
 
     /**
-     * Get all sales.
+     * Get all sales with pagination.
      *
-     * @return a list of all sales
+     * @param page the page number (0-based)
+     * @param size the number of items per page
+     * @return a list of sales for the given page
      */
-    List<Sales> getAllSales();
+    List<Sales> getAllSales(int page, int size);
 
     /**
      * Get a sales by its ID.
@@ -27,5 +29,21 @@ public interface SalesService {
      * @return an Optional containing the sales if found, or empty if not found
      */
     Optional<Sales> getSalesById(Long id);
+
+    /**
+     * Get all sales for a specific brand.
+     *
+     * @param brandId the brand ID
+     * @return a list of sales for the given brand
+     */
+    List<Sales> getSalesByBrandId(Long brandId);
+
+    /**
+     * Get all sales for a specific vehicle.
+     *
+     * @param vehicleId the vehicle ID
+     * @return a list of sales for the given vehicle
+     */
+    List<Sales> getSalesByVehicleId(Long vehicleId);
 
 }
