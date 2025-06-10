@@ -3,6 +3,8 @@ package com.septeo.ulyses.technical.test.service;
 import com.septeo.ulyses.technical.test.entity.Brand;
 import com.septeo.ulyses.technical.test.repository.BrandRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +26,7 @@ public class BrandServiceImpl implements BrandService {
      * {@inheritDoc}
      */
     @Override
+    @Cacheable("brands")
     public List<Brand> getAllBrands() {
         return brandRepository.findAll();
     }
@@ -32,6 +35,7 @@ public class BrandServiceImpl implements BrandService {
      * {@inheritDoc}
      */
     @Override
+    @Cacheable(value = "brandById", key = "#id")
     public Optional<Brand> getBrandById(Long id) {
         return brandRepository.findById(id);
     }
@@ -40,6 +44,7 @@ public class BrandServiceImpl implements BrandService {
      * {@inheritDoc}
      */
     @Override
+    @CacheEvict(value = { "brands", "brandById" }, allEntries = true)
     public Brand saveBrand(Brand brand) {
         return brandRepository.save(brand);
     }
@@ -48,6 +53,7 @@ public class BrandServiceImpl implements BrandService {
      * {@inheritDoc}
      */
     @Override
+    @CacheEvict(value = { "brands", "brandById" }, allEntries = true)
     public void deleteBrand(Long id) {
         brandRepository.deleteById(id);
     }
