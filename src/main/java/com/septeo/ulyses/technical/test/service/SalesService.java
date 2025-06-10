@@ -1,5 +1,6 @@
 package com.septeo.ulyses.technical.test.service;
 
+import com.septeo.ulyses.technical.test.dtos.VehicleSalesDTO;
 import com.septeo.ulyses.technical.test.entity.Brand;
 import com.septeo.ulyses.technical.test.entity.Sales;
 import com.septeo.ulyses.technical.test.entity.Vehicle;
@@ -45,5 +46,14 @@ public interface SalesService {
      * @return a list of sales for the given vehicle
      */
     List<Sales> getSalesByVehicleId(Long vehicleId);
+
+    /**
+     * Get the top 5 best-selling vehicles optionally filtered by sale date range.
+     *
+     * @param startDate the start date to filter sales (inclusive), or null for no lower bound
+     * @param endDate the end date to filter sales (inclusive), or null for no upper bound
+     * @return a list of top 5 VehicleSalesDTO representing the best-selling vehicles
+     */
+    List<VehicleSalesDTO> getBestSellingVehicles(LocalDate startDate, LocalDate endDate);
 
 }

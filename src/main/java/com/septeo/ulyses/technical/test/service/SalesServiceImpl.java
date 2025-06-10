@@ -1,13 +1,14 @@
 package com.septeo.ulyses.technical.test.service;
 
+import com.septeo.ulyses.technical.test.dtos.VehicleSalesDTO;
 import com.septeo.ulyses.technical.test.entity.Sales;
 import com.septeo.ulyses.technical.test.repository.SalesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.util.*;
 
 /**
  * Implementation of the SalesService interface.
@@ -50,5 +51,50 @@ public class SalesServiceImpl implements SalesService {
     @Override
     public List<Sales> getSalesByVehicleId(Long vehicleId) {
         return salesRepository.findByVehicleId(vehicleId);
+    }
+
+    @Override
+    public List<VehicleSalesDTO> getBestSellingVehicles(LocalDate startDate, LocalDate endDate) {
+        List<Sales> allSales = salesRepository.findAll(0, Integer.MAX_VALUE);
+
+        List<Sales> filteredSales = allSales.stream()
+                .filter(s -> (startDate == null || !s.getSaleDate().isBefore(startDate)) &&
+                        (endDate == null || !s.getSaleDate().isAfter(endDate)))
+                .toList();
+
+        Map<Long, VehicleSalesDTO> vehicleSalesMap = new HashMap<>();
+        for (Sales sale : filteredSales) {
+            Long vehicleId = sale.getVehicle().getId();
+            String model = sale.getVehicle().getModel();
+
+            vehicleSalesMap.compute(vehicleId, (key, existing) -> {
+                if (existing == null) {
+                    return new VehicleSalesDTO(vehicleId, model, 1);
+                } else {
+                    return new VehicleSalesDTO(vehicleId, model, existing.totalSales() + 1);
+                }
+            });
+        }
+
+        List<VehicleSalesDTO> topList = new ArrayList<>();
+
+        for (VehicleSalesDTO dto : vehicleSalesMap.values()) {
+            boolean inserted = false;
+            for (int i = 0; i < topList.size(); i++) {
+                if (dto.totalSales() > topList.get(i).totalSales()) {
+                    topList.add(i, dto);
+                    inserted = true;
+                    break;
+                }
+            }
+            if (!inserted && topList.size() < 5) {
+                topList.add(dto);
+            }
+            if (topList.size() > 5) {
+                topList.remove(topList.size() - 1);
+            }
+        }
+
+        return topList;
     }
 }
